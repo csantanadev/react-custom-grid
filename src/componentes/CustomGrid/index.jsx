@@ -5,6 +5,7 @@ function CustomGrid({ columns, rows, select, buttons, events }) {
 
     //table-striped
     const [data, setData] = useState(rows)
+    const [ordenacao, setOrdenacao] = useState({campo: '', direcao: ''})
 
 
     function handleSelect(id) {
@@ -35,6 +36,7 @@ function CustomGrid({ columns, rows, select, buttons, events }) {
         });
         
         setData(newData);
+        setOrdenacao({campo: key, ordenacao: 'ASC'});
     }
 
 
@@ -64,7 +66,9 @@ function CustomGrid({ columns, rows, select, buttons, events }) {
                         }
                         {
                             columns.map((c) => {
-                                return <th scope="col" style={{cursor: 'pointer'}}  onClick={() => sortTitle(c.key)}  >{c.title}</th>
+                                return <th scope="col" style={ c.key === ordenacao.campo ? {color: '#0b5ed7',  cursor: 'pointer'} : 
+                                                                                           {color: 'black',  cursor: 'pointer'}}  
+                                                                                            onClick={() => sortTitle(c.key)}  >{c.title}</th>
                             })
                         }
                         {
