@@ -25,17 +25,46 @@ function CustomGrid({ columns, rows, select, buttons, events }) {
         setData(newData);
     }
 
+    function sortTitle(key) {
+
+        // tive que criar uma property order para de fato o estado mudar e refletir na DOM
+        const newData = data.sort(dynamicSort(key)).map(item => {
+
+            return { ...item, order: !item.order } 
+
+        });
+        
+        setData(newData);
+    }
+
+
+    function dynamicSort(property) {
+        var sortOrder = 1;
+        if(property[0] === "-") {
+            sortOrder = -1;
+            property = property.substr(1);
+        }
+        return function (a,b) {
+            /* next line works with strings and numbers, 
+             * and you may want to customize it to your needs
+             */
+            var result = (a[property] < b[property]) ? -1 : (a[property] > b[property]) ? 1 : 0;
+            return result * sortOrder;
+        }
+    }
+
+
     return (
         <div className="container">
             <table className="table">
                 <thead>
                     <tr>
                         {
-                            select === true ? <th scope="col"><input type="checkbox" onChange={selectAll}></input></th> : null
+                            select === true ? <th scope="col"><input type="checkbox" onChange={selectAll} ></input></th> : null
                         }
                         {
                             columns.map((c) => {
-                                return <th scope="col">{c.title}</th>
+                                return <th scope="col" style={{cursor: 'pointer'}}  onClick={() => sortTitle(c.key)}  >{c.title}</th>
                             })
                         }
                         {
