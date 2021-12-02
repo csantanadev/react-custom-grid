@@ -28,6 +28,10 @@ function CustomGrid({ columns, rows, select, buttons, events }) {
 
     function sortTitle(key) {
 
+        console.log('nometodo title', ordenacao);
+
+        let direction = 'ASC';
+
         // tive que criar uma property order para de fato o estado mudar e refletir na DOM
         const newData = data.sort(dynamicSort(key)).map(item => {
 
@@ -35,8 +39,25 @@ function CustomGrid({ columns, rows, select, buttons, events }) {
 
         });
         
+        
+
+      /*  if (key === ordenacao.campo) {
+
+            console.log('antes do if', ordenacao.direcao)
+
+            if (ordenacao.direcao === 'ASC') {
+                direction = 'DESC'
+            }
+            else
+            {
+                direction = 'ASC'
+            }
+            console.log('avaliando', direction)
+        } */
+
         setData(newData);
         setOrdenacao({campo: key, ordenacao: 'ASC'});
+
     }
 
 
@@ -79,6 +100,11 @@ function CustomGrid({ columns, rows, select, buttons, events }) {
                     </tr>
                 </thead>
                 <tbody>
+                      {
+                          console.log(ordenacao)
+                      }  
+
+
                     {
                         data.map((r) => {
                             return (
