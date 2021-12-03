@@ -30,7 +30,7 @@ function CustomGrid({ columns, rows, select, buttons, events }) {
 
         console.log('nometodo title', ordenacao);
 
-        let direction = 'ASC';
+//        let direction = 'ASC';
 
         // tive que criar uma property order para de fato o estado mudar e refletir na DOM
         const newData = data.sort(dynamicSort(key)).map(item => {
