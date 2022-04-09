@@ -5,12 +5,12 @@ function CustomGrid({ columns, rows, select, buttons, events }) {
 
     //table-striped
     const [data, setData] = useState(rows)
-    const [ordenacao, setOrdenacao] = useState({campo: '', direcao: ''})
+    const [ordenacao, setOrdenacao] = useState({ campo: '', dir_asc: true })
 
 
     function handleSelect(id) {
 
-        const newData = data.map(item => {
+        const newData = data?.map(item => {
 
             return item.id === id ? { ...item, checked: !item.checked } : item
 
@@ -20,7 +20,7 @@ function CustomGrid({ columns, rows, select, buttons, events }) {
     }
 
     function selectAll() {
-        const newData = data.map(item => {
+        const newData = data?.map(item => {
             return { ...item, checked: !item.checked };
         });
         setData(newData);
@@ -28,50 +28,28 @@ function CustomGrid({ columns, rows, select, buttons, events }) {
 
     function sortTitle(key) {
 
-        console.log('nometodo title', ordenacao);
+        // tive que criar uma property dir_asc para de fato o estado mudar e refletir na DOM
+        const newData = data.sort(dynamicSort(key, ordenacao.dir_asc)).map(item => {
 
-//        let direction = 'ASC';
-
-        // tive que criar uma property order para de fato o estado mudar e refletir na DOM
-        const newData = data.sort(dynamicSort(key)).map(item => {
-
-            return { ...item, order: !item.order } 
+            return { ...item, order: !item.order }
 
         });
-        
-        
-
-      /*  if (key === ordenacao.campo) {
-
-            console.log('antes do if', ordenacao.direcao)
-
-            if (ordenacao.direcao === 'ASC') {
-                direction = 'DESC'
-            }
-            else
-            {
-                direction = 'ASC'
-            }
-            console.log('avaliando', direction)
-        } */
 
         setData(newData);
-        setOrdenacao({campo: key, ordenacao: 'ASC'});
-
+        setOrdenacao({ campo: key, dir_asc: !ordenacao.dir_asc });
     }
 
+    // um exemplo de closure
+    function dynamicSort(property, direction) {
 
-    function dynamicSort(property) {
-        var sortOrder = 1;
-        if(property[0] === "-") {
+        let sortOrder = direction === true ? 1 : -1;
+
+        if (property[0] === "-") {
             sortOrder = -1;
             property = property.substr(1);
         }
-        return function (a,b) {
-            /* next line works with strings and numbers, 
-             * and you may want to customize it to your needs
-             */
-            var result = (a[property] < b[property]) ? -1 : (a[property] > b[property]) ? 1 : 0;
+        return function (a, b) {
+            let result = (a[property] < b[property]) ? -1 : (a[property] > b[property]) ? 1 : 0;
             return result * sortOrder;
         }
     }
@@ -86,10 +64,10 @@ function CustomGrid({ columns, rows, select, buttons, events }) {
                             select === true ? <th scope="col"><input type="checkbox" onChange={selectAll} ></input></th> : null
                         }
                         {
-                            columns.map((c) => {
-                                return <th scope="col" style={ c.key === ordenacao.campo ? {color: '#0b5ed7',  cursor: 'pointer'} : 
-                                                                                           {color: 'black',  cursor: 'pointer'}}  
-                                                                                            onClick={() => sortTitle(c.key)}  >{c.title}</th>
+                            columns?.map((c) => {
+                                return <th scope="col" style={c.key === ordenacao.campo ? { color: '#0b5ed7', cursor: 'pointer' } :
+                                    { color: 'black', cursor: 'pointer' }}
+                                    onClick={() => sortTitle(c.key)}  >{c.title}</th>
                             })
                         }
                         {
@@ -99,14 +77,10 @@ function CustomGrid({ columns, rows, select, buttons, events }) {
                         }
                     </tr>
                 </thead>
+
                 <tbody>
-                      {
-                          console.log(ordenacao)
-                      }  
-
-
                     {
-                        data.map((r) => {
+                        data?.map((r) => {
                             return (
                                 <tr key={r.id.toString()} style={r.checked ? { backgroundColor: "#fff3cd" } : null}  >
                                     {
@@ -118,16 +92,16 @@ function CustomGrid({ columns, rows, select, buttons, events }) {
                                         </td> : null
                                     }
                                     {
-                                        columns.map(c => {
+                                        columns?.map(c => {
                                             return <td>{r[c.key]}</td>
                                         })
                                     }
                                     {
                                         buttons?.map((b, index) => {
-                                            return <td>{<button 
-                                                            onClick={() => events[index](r)}
-                                                            style={{borderRadius: 3,  display: 'inline-block', backgroundColor: '#0b5ed7', color: '#fff'}}    
-                                                            > {b} </button>}</td>
+                                            return <td>{<button
+                                                onClick={() => events[index](r)}
+                                                style={{ borderRadius: 3, display: 'inline-block', backgroundColor: '#0b5ed7', color: '#fff' }}
+                                            > {b} </button>}</td>
                                         })
                                     }
                                 </tr>
